@@ -10,6 +10,7 @@ import os
 import json
 from .build import DATASETS
 from utils.logger import *
+from utils.misc import fps
 
 
 # References:
@@ -103,6 +104,9 @@ class MyData(data.Dataset):
                 file_path = file_path[rand_idx]
             data[ri] = IO.get(file_path).astype(np.float32)
 
+            # 先采样到统一的点数
+            data[ri] = fps(data[ri], 2048)
+            
             # 这里自己做归一化处理，为了和pcn数据集对齐
             data[ri] = self._normalize(data[ri])
 

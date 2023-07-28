@@ -29,7 +29,7 @@ def random_sample(data, number):
     data = torch.gather(data, 1, ind.unsqueeze(-1).expand(-1, -1, data.size(-1)))
     return data
 
-def fps(data, number):
+def fps(data, number):   # 最远点采样算法，可以直接用在我的gt上做一个下采样，统一到一致点数上
     '''
         data B N 3
         number int

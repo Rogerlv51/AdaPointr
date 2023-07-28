@@ -23,11 +23,11 @@ bnmscheduler: {
 }}
 
 dataset : {
-  train : { _base_: cfgs/dataset_configs/PCN.yaml, 
+  train : { _base_: cfgs/dataset_configs/my_data.yaml, 
             others: {subset: 'train'}},
-  val : { _base_: cfgs/dataset_configs/PCN.yaml, 
+  val : { _base_: cfgs/dataset_configs/my_data.yaml, 
             others: {subset: 'test'}},
-  test : { _base_: cfgs/dataset_configs/PCN.yaml, 
+  test : { _base_: cfgs/dataset_configs/my_data.yaml, 
             others: {subset: 'test'}}}
             
 model : {
