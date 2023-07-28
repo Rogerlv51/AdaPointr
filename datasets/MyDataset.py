@@ -17,7 +17,7 @@ from utils.misc import fps
 # - https://github.com/hzxie/GRNet/blob/master/utils/data_loaders.py
 
 @DATASETS.register_module()
-class MyData(data.Dataset):
+class Teeth(data.Dataset):
     # def __init__(self, data_root, subset, class_choice = None):
     def __init__(self, config):
         self.partial_points_path = config.PARTIAL_POINTS_PATH
@@ -106,7 +106,7 @@ class MyData(data.Dataset):
 
             # 先采样到统一的点数
             data[ri] = fps(data[ri], 2048)
-            
+
             # 这里自己做归一化处理，为了和pcn数据集对齐
             data[ri] = self._normalize(data[ri])
 
