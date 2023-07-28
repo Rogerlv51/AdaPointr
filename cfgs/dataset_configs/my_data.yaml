@@ -1,0 +1,6 @@
+NAME: Teeth
+CATEGORY_FILE_PATH: my_data/PCN.json
+N_POINTS: 16384   # 这里是规定GT的点数，需要和gt一致
+N_RENDERINGS: 1
+PARTIAL_POINTS_PATH: my_data/%s/partial/%s/%s.ply
+COMPLETE_POINTS_PATH: my_data/%s/completion/%s/%s.ply
