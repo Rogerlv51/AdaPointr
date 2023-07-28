@@ -11,6 +11,7 @@ import json
 from .build import DATASETS
 from utils.logger import *
 from utils.misc import fps
+import torch
 
 
 # References:
@@ -83,7 +84,7 @@ class Teeth(data.Dataset):
         print_log('Complete collecting files of the dataset. Total files: %d' % len(file_list), logger='MYDATASET')
         return file_list
 
-    def _normalize(pc):
+    def _normalize(self, pc):
         min_val = np.min(pc, axis=0)
         max_val = np.max(pc, axis=0)
         range_val = max_val - min_val
@@ -104,11 +105,13 @@ class Teeth(data.Dataset):
                 file_path = file_path[rand_idx]
             data[ri] = IO.get(file_path).astype(np.float32)
 
-            # 先采样到统一的点数
-            data[ri] = fps(data[ri], 2048)
-
             # 这里自己做归一化处理，为了和pcn数据集对齐
             data[ri] = self._normalize(data[ri])
+            # 先采样到统一的点数
+            data[ri] = torch.from_numpy(data[ri])
+            # 注意在这里最远点采样，不能直接用pointnet的fps函数，因为支持cuda，而我们这里的数据是cpu的
+            data[ri] = fps(data[ri], 2048)
+            
 
         assert data['gt'].shape[0] == self.npoints   # 这里判断，gt对应的点数必须和config里面规定的一致
 
