@@ -12,7 +12,9 @@ file_list = glob.glob("*")
 
 def save_list_to_txt(lst, filename):
     with open(filename, 'w') as file:
-        file.write('\n'.join(lst))
+        for ll in lst:
+            file.write("\""+ll.split(".")[0]+"\""+","+"\n")
+        
 
 
 save_list_to_txt(file_list, "output.txt")
