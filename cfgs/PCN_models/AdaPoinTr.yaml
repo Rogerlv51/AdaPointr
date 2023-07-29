@@ -26,7 +26,7 @@ dataset : {
   train : { _base_: cfgs/dataset_configs/my_data.yaml, 
             others: {subset: 'train'}},
   val : { _base_: cfgs/dataset_configs/my_data.yaml, 
-            others: {subset: 'test'}},
+            others: {subset: 'val'}},
   test : { _base_: cfgs/dataset_configs/my_data.yaml, 
             others: {subset: 'test'}}}
             

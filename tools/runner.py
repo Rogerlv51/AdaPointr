@@ -260,18 +260,21 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
                 gt_ptcloud = gt.squeeze().cpu().numpy()
                 gt_ptcloud_img = misc.get_ptcloud_img(gt_ptcloud)
                 val_writer.add_image('Model%02d/DenseGT' % idx, gt_ptcloud_img, epoch, dataformats='HWC')
-        
-            if (idx+1) % interval == 0:
-                print_log('Test[%d/%d] Taxonomy = %s Sample = %s Losses = %s Metrics = %s' %
-                            (idx + 1, n_samples, taxonomy_id, model_id, ['%.4f' % l for l in test_losses.val()], 
-                            ['%.4f' % m for m in _metrics]), logger=logger)
+            # 原runner代码
+            # if (idx+1) % interval == 0:
+            #     print_log('Test[%d/%d] Taxonomy = %s Sample = %s Losses = %s Metrics = %s' %
+            #                 (idx + 1, n_samples, taxonomy_id, model_id, ['%.4f' % l for l in test_losses.val()], 
+            #                 ['%.4f' % m for m in _metrics]), logger=logger)
+            print_log('Test[%d/%d] Taxonomy = %s Sample = %s Losses = %s Metrics = %s' %
+                        (idx + 1, n_samples, taxonomy_id, model_id, ['%.4f' % l for l in test_losses.val()], 
+                        ['%.4f' % m for m in _metrics]), logger=logger)
         for _,v in category_metrics.items():
             test_metrics.update(v.avg())
         print_log('[Validation] EPOCH: %d  Metrics = %s' % (epoch, ['%.4f' % m for m in test_metrics.avg()]), logger=logger)
 
         if args.distributed:
             torch.cuda.synchronize()
-     
+    ''' 由于我们这边不需要使用shapenet的数据集而是自定义数据集,所以不打印结果了 
     # Print testing results
     shapenet_dict = json.load(open('./data/shapenet_synset_dict.json', 'r'))
     print_log('============================ TEST RESULTS ============================',logger=logger)
@@ -297,6 +300,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
     for value in test_metrics.avg():
         msg += '%.3f \t' % value
     print_log(msg, logger=logger)
+    '''
 
     # Add testing results to TensorBoard
     if val_writer is not None:
