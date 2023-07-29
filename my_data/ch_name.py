@@ -2,7 +2,7 @@ import os
 import glob
 
 # 修改为对应绝对路径
-os.chdir("/home/rogerlv/PoinTr/my_data/train/completion/111")
+os.chdir("/mnt/c/Users/Roger/Desktop/AdaPointr/my_data/train/completion/111")
 completion_list = glob.glob("*f.ply")
 
 for ll in completion_list:

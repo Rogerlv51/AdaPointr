@@ -1,9 +1,8 @@
 import numpy as np
-import numpy as np
-from plyfile import PlyData
+# from plyfile import PlyData
 
 import torch
-import numpy as np
+
 
 def farthest_point_sample(points, num_samples):
     """
@@ -31,20 +30,20 @@ def farthest_point_sample(points, num_samples):
 
     return new_points
 
-def read_data(path):
-    plydata = PlyData.read(path)
-    vertex = np.array([list(x)[:3] for x in plydata['vertex'].data])
-    v_torch = torch.from_numpy(vertex)
-    return v_torch
+# def read_data(path):
+#     plydata = PlyData.read(path)
+#     vertex = np.array([list(x)[:3] for x in plydata['vertex'].data])
+#     v_torch = torch.from_numpy(vertex)
+#     return v_torch
     
-path = 'dataset/test/ss.ply'
-data = read_data(path=path)
+# path = 'dataset/test/ss.ply'
+# data = read_data(path=path)
 
-fps_data_torch = farthest_point_sample(data, 512)
+# fps_data_torch = farthest_point_sample(data, 512)
 
-fps_data_np = fps_data_torch.numpy()
+# fps_data_np = fps_data_torch.numpy()
 
-# 保存numpy数组为.pts文件
-np.savetxt("tttttteestpoints.pts", fps_data_np, delimiter=" ")
+# # 保存numpy数组为.pts文件
+# np.savetxt("tttttteestpoints.pts", fps_data_np, delimiter=" ")
 
 
