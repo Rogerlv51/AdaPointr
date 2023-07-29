@@ -118,7 +118,7 @@ class Teeth(data.Dataset):
         if self.transforms is not None:
             data = self.transforms(data)
 
-        return (data['partial'], data['gt'])
+        return sample['taxonomy_id'], sample['model_id'], (data['partial'], data['gt'])
 
     def __len__(self):
         return len(self.file_list)

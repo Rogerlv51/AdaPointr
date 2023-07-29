@@ -98,11 +98,11 @@ def run_net(args, config, train_writer=None, val_writer=None):
             if  'PCN' in dataset_name or dataset_name == 'Completion3D' or 'ProjectShapeNet' in dataset_name or dataset_name == 'Teeth':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
-                if config.dataset.train._base_.CARS:
-                    if idx == 0:
-                        print_log('padding while KITTI training', logger=logger)
-                    # partial, gt = misc.random_scale(partial, gt) # specially for KITTI finetune
-                    partial = misc.random_dropping(partial, epoch) # specially for KITTI finetune
+                # if config.dataset.train._base_.CARS:
+                #     if idx == 0:
+                #         print_log('padding while KITTI training', logger=logger)
+                #     # partial, gt = misc.random_scale(partial, gt) # specially for KITTI finetune
+                #     partial = misc.random_dropping(partial, epoch) # specially for KITTI finetune
 
             elif 'ShapeNet' in dataset_name:
                 gt = data.cuda()
@@ -201,7 +201,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
 
             npoints = config.dataset.val._base_.N_POINTS
             dataset_name = config.dataset.val._base_.NAME
-            if 'PCN' in dataset_name or dataset_name == 'Completion3D' or 'ProjectShapeNet' in dataset_name:
+            if 'PCN' in dataset_name or dataset_name == 'Completion3D' or 'ProjectShapeNet' in dataset_name or dataset_name == 'Teeth':
                 partial = data[0].cuda()
                 gt = data[1].cuda()
             elif 'ShapeNet' in dataset_name:
