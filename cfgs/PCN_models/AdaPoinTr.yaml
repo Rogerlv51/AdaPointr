@@ -33,7 +33,7 @@ dataset : {
 model : {
     NAME: AdaPoinTr, 
     num_query: 512, 
-    num_points: 16384,
+    num_points: 2048,   # 模型输出点数要跟GT一致
     center_num: [512, 256],
     global_feature_dim: 1024, 
     encoder_type: graph,
