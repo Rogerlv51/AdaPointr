@@ -10,8 +10,8 @@ import os
 import json
 from .build import DATASETS
 from utils.logger import *
-from utils.misc import fps
 import torch
+from FPS import farthest_point_sample
 
 
 # References:
@@ -110,8 +110,8 @@ class Teeth(data.Dataset):
             # 先采样到统一的点数
             data[ri] = torch.from_numpy(data[ri])
             # 注意在这里最远点采样，不能直接用pointnet的fps函数，因为支持cuda，而我们这里的数据是cpu的
-            data[ri] = fps(data[ri], 2048)
-            
+            data[ri] = farthest_point_sample(data[ri], 2048)
+            data[ri] = data[ri].numpy().astype(np.float32)
 
         assert data['gt'].shape[0] == self.npoints   # 这里判断，gt对应的点数必须和config里面规定的一致
 
