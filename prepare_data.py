@@ -4,18 +4,18 @@ import sys
 import glob
 
 
-os.makedirs("my_data/train/completion", exist_ok=True)
-os.makedirs("my_data/train/partial", exist_ok=True)
+os.makedirs("my_data/val/completion/111", exist_ok=True)
+os.makedirs("my_data/val/partial/111", exist_ok=True)
 
-gt_path = "./my_data/train/completion"
-pt_path = "./my_data/train/partial"
+gt_path = "./my_data/val/completion/111"
+pt_path = "./my_data/val/partial/111"
 
-data_path = "teeth_data"
+data_path = "val_data"   # 修改为对应原数据放置位置即可
 os.chdir(data_path)
 completion_list = glob.glob("*f.ply")
 partial_list = glob.glob("*[0-9].ply")
 print(len(completion_list) == len(partial_list))
-os.chdir("/home/rogerlv/PoinTr")
+os.chdir("/home/rogerlv/Adapointr")
 
 for l in partial_list:
     shutil.copy(os.path.join(data_path,l), pt_path)
