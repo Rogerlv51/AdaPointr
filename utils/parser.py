@@ -14,7 +14,7 @@ def get_args():
         default='none',
         help='job launcher')     
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument('--num_workers', type=int, default=4)   
+    parser.add_argument('--num_workers', type=int, default=2)   
     # seed 
     parser.add_argument('--seed', type=int, default=0, help='random seed')
     parser.add_argument(
@@ -31,7 +31,7 @@ def get_args():
     parser.add_argument('--exp_name', type = str, default='default', help = 'experiment name')
     parser.add_argument('--start_ckpts', type = str, default=None, help = 'reload used ckpt path')
     parser.add_argument('--ckpts', type = str, default=None, help = 'test used ckpt path')
-    parser.add_argument('--val_freq', type = int, default=1, help = 'test freq')
+    parser.add_argument('--val_freq', type = int, default=5, help = 'test freq')
     parser.add_argument(
         '--resume', 
         action='store_true', 
