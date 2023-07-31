@@ -146,7 +146,7 @@ def run_net(args, config, train_writer=None, val_writer=None):
             batch_time.update(time.time() - batch_start_time)
             batch_start_time = time.time()
 
-            if idx % 100 == 0:
+            if idx % 5 == 0:
                 print_log('[Epoch %d/%d][Batch %d/%d] BatchTime = %.3f (s) DataTime = %.3f (s) Losses = %s lr = %.6f' %
                             (epoch, config.max_epoch, idx + 1, n_batches, batch_time.val(), data_time.val(),
                             ['%.4f' % l for l in losses.val()], optimizer.param_groups[0]['lr']), logger = logger)
