@@ -244,7 +244,7 @@ def validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val
                 category_metrics[_taxonomy_id].update(_metrics)
 
 
-            if val_writer is not None and idx % 200 == 0:
+            if val_writer is not None and idx % 10 == 0:   # 设置tensorboard验证可视化的数据间隔
                 input_pc = partial.squeeze().detach().cpu().numpy()
                 input_pc = misc.get_ptcloud_img(input_pc)
                 val_writer.add_image('Model%02d/Input'% idx , input_pc, epoch, dataformats='HWC')
