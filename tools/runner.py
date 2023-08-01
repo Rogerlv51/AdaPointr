@@ -101,7 +101,7 @@ def run_net(args, config, train_writer=None, val_writer=None):
                 # if config.dataset.train._base_.CARS:
                 #     if idx == 0:
                 #         print_log('padding while KITTI training', logger=logger)
-                #     # partial, gt = misc.random_scale(partial, gt) # specially for KITTI finetune
+                partial, gt = misc.random_scale(partial, gt) # 测试下采用随机比例后训练效果会不会变好
                 #     partial = misc.random_dropping(partial, epoch) # specially for KITTI finetune
 
             elif 'ShapeNet' in dataset_name:
