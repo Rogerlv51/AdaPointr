@@ -53,13 +53,20 @@ def get_args():
     return args
 
 def my_normalize(pc):
-        min_val = np.min(pc, axis=0)
-        max_val = np.max(pc, axis=0)
-        range_val = max_val - min_val
-        point_cloud_normalized = pc - min_val
-        point_cloud_normalized /= range_val
-        point_cloud_normalized -= 0.5
-        return point_cloud_normalized
+    min_val = np.min(pc, axis=0)
+    max_val = np.max(pc, axis=0)
+    range_val = max_val - min_val
+    point_cloud_normalized = pc - min_val
+    point_cloud_normalized /= range_val
+    point_cloud_normalized -= 0.5
+    return point_cloud_normalized, min_val, max_val
+
+def my_denormalize(point_cloud_normalized, min_val, max_val):
+    range_val = max_val - min_val
+    point_cloud_denormalized = point_cloud_normalized + 0.5
+    point_cloud_denormalized *= range_val
+    point_cloud_denormalized += min_val
+    return point_cloud_denormalized
 
 def inference_single(model, pc_path, args, config, root=None):
     if root is not None:
@@ -68,7 +75,7 @@ def inference_single(model, pc_path, args, config, root=None):
         pc_file = pc_path
     # read single point cloud
     pc_ndarray = IO.get(pc_file).astype(np.float32)
-    pc_ndarray = my_normalize(pc_ndarray)
+    pc_ndarray, min_val, max_val = my_normalize(pc_ndarray)
     # pc_ndarray = torch.from_numpy(pc_ndarray)
     # pc_ndarray = farthest_point_sample(pc_ndarray, 2048)
     # pc_ndarray = pc_ndarray.numpy().astype(np.float32)
@@ -105,6 +112,7 @@ def inference_single(model, pc_path, args, config, root=None):
     # inference
     ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
     dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
+    dense_points = my_denormalize(dense_points, min_val, max_val)
     
     if config.dataset.train._base_['NAME'] == 'ShapeNet':
         # denormalize it to adapt for the original input
