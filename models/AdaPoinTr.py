@@ -539,7 +539,7 @@ class DGCNN_Grouper(nn.Module):
                                    )
         self.num_features = 128
     @staticmethod
-    def fps_downsample(coor, x, num_group):
+    def fps_downsample(coor, x, num_group):   # 使用fps找下采样坐标点
         xyz = coor.transpose(1, 2).contiguous() # b, n, 3
         fps_idx = pointnet2_utils.furthest_point_sample(xyz, num_group)
 
@@ -759,11 +759,12 @@ class SimpleRebuildFCLayer(nn.Module):
 
 ######################################## PCTransformer ########################################   
 class PCTransformer(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config):   # config对应AdaPointr.yaml的配置
         super().__init__()
         encoder_config = config.encoder_config
         decoder_config = config.decoder_config
-        self.center_num  = getattr(config, 'center_num', [512, 128])
+        # getattr() 是一个内置的 Python 函数，用于返回对象的指定属性的值。参数为[对象，属性，默认值]
+        self.center_num  = getattr(config, 'center_num', [512, 128])  # 设置中心点数量对应文章中FPS的操作
         self.encoder_type = config.encoder_type
         assert self.encoder_type in ['graph', 'pn'], f'unexpected encoder_type {self.encoder_type}'
 
@@ -774,7 +775,7 @@ class PCTransformer(nn.Module):
         print_log(f'Transformer with config {config}', logger='MODEL')
         # base encoder
         if self.encoder_type == 'graph':
-            self.grouper = DGCNN_Grouper(k = 16)
+            self.grouper = DGCNN_Grouper(k = 16)   # 文章中采用DGCNN的分层下采样网络提取中心点特征，可以看到下采样两次
         else:
             self.grouper = SimpleEncoder(k = 32, embed_dims=512)
         self.pos_embed = nn.Sequential(
@@ -837,18 +838,18 @@ class PCTransformer(nn.Module):
 
     def forward(self, xyz):
         bs = xyz.size(0)
-        coor, f = self.grouper(xyz, self.center_num) # b n c
-        pe =  self.pos_embed(coor)
-        x = self.input_proj(f)
+        coor, f = self.grouper(xyz, self.center_num) # b n c   分层下采样得到中心点坐标和中心点特征
+        pe =  self.pos_embed(coor)   # 对中心点坐标进行位置编码，与标准transformer中embedding对齐
+        x = self.input_proj(f)   # 对中心点特征再经过一个MLP进行特征提取
 
-        x = self.encoder(x + pe, coor) # b n c
-        global_feature = self.increase_dim(x) # B 1024 N 
+        x = self.encoder(x + pe, coor) # b n c  提取到的特征和位置编码concat起来，与中心点坐标一起送到编码器中
+        global_feature = self.increase_dim(x) # B 1024 N    提取全局特征
         global_feature = torch.max(global_feature, dim=1)[0] # B 1024
 
         coarse = self.coarse_pred(global_feature).reshape(bs, -1, 3)
 
         coarse_inp = misc.fps(xyz, self.num_query//2) # B 128 3
-        coarse = torch.cat([coarse, coarse_inp], dim=1) # B 224+128 3?
+        coarse = torch.cat([coarse, coarse_inp], dim=1) # B 224+128 3?  可以看到在文章中是预测缺失的部分并和原始输入点云简单concat起来
 
         mem = self.mem_link(x)
 
