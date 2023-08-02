@@ -69,9 +69,9 @@ def inference_single(model, pc_path, args, config, root=None):
     # read single point cloud
     pc_ndarray = IO.get(pc_file).astype(np.float32)
     pc_ndarray = my_normalize(pc_ndarray)
-    pc_ndarray = torch.from_numpy(pc_ndarray)
-    pc_ndarray = farthest_point_sample(pc_ndarray, 2048)
-    pc_ndarray = pc_ndarray.numpy().astype(np.float32)
+    # pc_ndarray = torch.from_numpy(pc_ndarray)
+    # pc_ndarray = farthest_point_sample(pc_ndarray, 2048)
+    # pc_ndarray = pc_ndarray.numpy().astype(np.float32)
     # transform it according to the model 
     if config.dataset.train._base_['NAME'] == 'ShapeNet':
         # normalize it to fit the model on ShapeNet-55/34
@@ -105,7 +105,7 @@ def inference_single(model, pc_path, args, config, root=None):
     # inference
     ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
     dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
-    print(dense_points)
+    
     if config.dataset.train._base_['NAME'] == 'ShapeNet':
         # denormalize it to adapt for the original input
         dense_points = dense_points * m
