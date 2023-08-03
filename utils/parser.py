@@ -36,7 +36,7 @@ def get_args():
         '--resume', 
         action='store_true', 
         default=False, 
-        help = 'autoresume training (interrupted by accident)')
+        help = 'autoresume training (interrupted by accident)')  # 设置是否继续训练
     parser.add_argument(
         '--test', 
         action='store_true', 
