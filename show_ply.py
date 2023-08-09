@@ -25,7 +25,7 @@ def self_normalize(pc):
 
 
 if __name__ == '__main__':
-    path = '2023-07-27_11_39_57-Teeth-11.ply'
+    path = '2023-08-04_16_41_44-Teeth-43p.ply'
     point_cloud = read_pcd(path)
     pc_1 = pc_norm(point_cloud)
     pc_2 = self_normalize(point_cloud)

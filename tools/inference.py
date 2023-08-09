@@ -124,7 +124,7 @@ def inference_single(model, pc_path, args, config, root=None):
         os.makedirs(target_path, exist_ok=True)
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(dense_points)
-
+        o3d.visualization.draw_geometries([pcd], height=680, width=1080, window_name="Pred")
         o3d.io.write_point_cloud(os.path.join(target_path, "point_cloud.ply"), pcd)
         # np.save(os.path.join(target_path, 'fine.npy'), dense_points)
         if args.save_vis_img:
