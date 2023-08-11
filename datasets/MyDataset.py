@@ -50,7 +50,7 @@ class Teeth(data.Dataset):
     def _get_transforms(self, subset):    ## 数据transform处理
         if subset == 'train':
             return data_transforms.Compose([{
-                'callback': 'UpSamplePoints',
+                'callback': 'RandomSamplePoints',
                 'parameters': {
                     'n_points': 2048
                 },
@@ -64,7 +64,7 @@ class Teeth(data.Dataset):
             }])
         else:   ## 测试的时候少了一步RandomMirrorPoints的操作
             return data_transforms.Compose([{
-                'callback': 'UpSamplePoints',
+                'callback': 'RandomSamplePoints',
                 'parameters': {
                     'n_points': 2048
                 },
@@ -127,7 +127,7 @@ class Teeth(data.Dataset):
                 data[ri] = mesh_to_points(file_path, 16384)
 
             # 这里自己做归一化处理，为了和pcn数据集对齐 TEST：和shapenet对齐
-            data[ri] = self.pc_norm(data[ri])
+            data[ri] = self._normalize(data[ri])
             # 先采样到统一的点数
             # data[ri] = torch.from_numpy(data[ri])
             # 注意在这里最远点采样，不能直接用pointnet的fps函数，因为支持cuda，而我们这里的数据是cpu的
