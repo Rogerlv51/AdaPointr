@@ -50,7 +50,7 @@ class Teeth(data.Dataset):
     def _get_transforms(self, subset):    ## 数据transform处理
         if subset == 'train':
             return data_transforms.Compose([{
-                'callback': 'RandomSamplePoints',
+                'callback': 'UpSamplePoints',
                 'parameters': {
                     'n_points': 2048
                 },
@@ -64,7 +64,7 @@ class Teeth(data.Dataset):
             }])
         else:   ## 测试的时候少了一步RandomMirrorPoints的操作
             return data_transforms.Compose([{
-                'callback': 'RandomSamplePoints',
+                'callback': 'UpSamplePoints',
                 'parameters': {
                     'n_points': 2048
                 },
@@ -102,6 +102,14 @@ class Teeth(data.Dataset):
         point_cloud_normalized /= range_val
         point_cloud_normalized -= 0.5
         return point_cloud_normalized
+    
+    def pc_norm(self, pc):   # TEST：添加shapenet处理归一化方式
+        """ pc: NxC, return NxC """
+        centroid = np.mean(pc, axis=0)
+        pc = pc - centroid
+        m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
+        pc = pc / m
+        return pc
 
     def __getitem__(self, idx):
         sample = self.file_list[idx]
@@ -113,11 +121,13 @@ class Teeth(data.Dataset):
             file_path = sample['%s_path' % ri]
             if type(file_path) == list:
                 file_path = file_path[rand_idx]
-            # data[ri] = IO.get(file_path).astype(np.float32)
-            data[ri] = mesh_to_points(file_path, 16384)
+            if ri == 'partial':
+                data[ri] = IO.get(file_path).astype(np.float32)   # TEST：输入输出分开做处理
+            else:
+                data[ri] = mesh_to_points(file_path, 16384)
 
-            # 这里自己做归一化处理，为了和pcn数据集对齐
-            data[ri] = self._normalize(data[ri])
+            # 这里自己做归一化处理，为了和pcn数据集对齐 TEST：和shapenet对齐
+            data[ri] = self.pc_norm(data[ri])
             # 先采样到统一的点数
             # data[ri] = torch.from_numpy(data[ri])
             # 注意在这里最远点采样，不能直接用pointnet的fps函数，因为支持cuda，而我们这里的数据是cpu的
