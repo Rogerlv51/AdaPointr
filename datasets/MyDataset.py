@@ -127,7 +127,7 @@ class Teeth(data.Dataset):
                 data[ri] = mesh_to_points(file_path, 16384)
 
             # 这里自己做归一化处理，为了和pcn数据集对齐 TEST：和shapenet对齐
-            data[ri] = self._normalize(data[ri])
+            data[ri] = self._normalize(data[ri])    # 还是必须做归一化处理不然会出问题，同时验证了partial和completion分开做归一化并不会影响分布，还是在同一坐标系
             # 先采样到统一的点数
             # data[ri] = torch.from_numpy(data[ri])
             # 注意在这里最远点采样，不能直接用pointnet的fps函数，因为支持cuda，而我们这里的数据是cpu的
