@@ -63,10 +63,10 @@ def my_normalize(pc):
 
 def my_denormalize(point_cloud_normalized, min_val, max_val):
     range_val = max_val - min_val
-    point_cloud_denormalized = point_cloud_normalized + 0.5
-    point_cloud_denormalized *= range_val
-    point_cloud_denormalized += min_val
-    return point_cloud_denormalized
+    point_cloud = point_cloud_normalized + 0.5
+    point_cloud *= range_val
+    point_cloud += min_val
+    return point_cloud
 
 def inference_single(model, pc_path, args, config, root=None):
     if root is not None:
@@ -75,7 +75,7 @@ def inference_single(model, pc_path, args, config, root=None):
         pc_file = pc_path
     # read single point cloud
     pc_ndarray = IO.get(pc_file).astype(np.float32)
-    pc_ndarray, min_val, max_val = my_normalize(pc_ndarray)
+    pc_ndarray_norm, min_val, max_val = my_normalize(pc_ndarray)
     # pc_ndarray = torch.from_numpy(pc_ndarray)
     # pc_ndarray = farthest_point_sample(pc_ndarray, 2048)
     # pc_ndarray = pc_ndarray.numpy().astype(np.float32)
@@ -106,13 +106,13 @@ def inference_single(model, pc_path, args, config, root=None):
         }, {
             'callback': 'ToTensor',
             'objects': ['input']
-        }])
+    }])
     
-    pc_ndarray_normalized = transform({'input': pc_ndarray})
+    pc_ndarray_normalized = transform({'input': pc_ndarray_norm})
     # inference
     ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
     dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
-    dense_points = my_denormalize(dense_points, min_val, max_val)
+    outputs = my_denormalize(dense_points, min_val, max_val)
     
     if config.dataset.train._base_['NAME'] == 'ShapeNet':
         # denormalize it to adapt for the original input
@@ -123,13 +123,13 @@ def inference_single(model, pc_path, args, config, root=None):
         target_path = os.path.join(args.out_pc_root, os.path.splitext(pc_path)[0])
         os.makedirs(target_path, exist_ok=True)
         pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(dense_points)
+        pcd.points = o3d.utility.Vector3dVector(outputs)
         o3d.visualization.draw_geometries([pcd], height=680, width=1080, window_name="Pred")
         o3d.io.write_point_cloud(os.path.join(target_path, "point_cloud.ply"), pcd)
         # np.save(os.path.join(target_path, 'fine.npy'), dense_points)
         if args.save_vis_img:
             input_img = misc.get_ptcloud_img(pc_ndarray_normalized['input'].numpy())
-            dense_img = misc.get_ptcloud_img(dense_points)
+            dense_img = misc.get_ptcloud_img(outputs)
             cv2.imwrite(os.path.join(target_path, 'input.jpg'), input_img)
             cv2.imwrite(os.path.join(target_path, 'fine.jpg'), dense_img)
     
