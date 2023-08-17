@@ -151,4 +151,5 @@ models/pointrvrc/mm3d_pn2
 data/ShapeNet55-34/projected_partial_noise
 inference_result/
 
-*ply
+*.ply
+*.pcd

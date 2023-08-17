@@ -169,7 +169,10 @@ def run_net(args, config, train_writer=None, val_writer=None):
         if epoch % args.val_freq == 0:
             # Validate the current model
             metrics = validate(base_model, test_dataloader, epoch, ChamferDisL1, ChamferDisL2, val_writer, args, config, logger=logger)
-
+            # 隔段时间保存下权重
+            save_name = "ckpt-epoch-{:04d}".format(epoch)
+            builder.save_checkpoint(base_model, optimizer, epoch, metrics, best_metrics, save_name, args, logger = logger)
+            
             # Save ckeckpoints
             if  metrics.better_than(best_metrics):
                 best_metrics = metrics

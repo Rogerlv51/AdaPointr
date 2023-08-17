@@ -10,8 +10,7 @@ import os
 import json
 from .build import DATASETS
 from utils.logger import *
-import torch
-from FPS import farthest_point_sample
+
 import open3d as o3d
 
 def mesh_to_points(pc, nums):
@@ -124,7 +123,7 @@ class Teeth(data.Dataset):
             if ri == 'partial':
                 data[ri] = IO.get(file_path).astype(np.float32)   # TEST：输入输出分开做处理
             else:
-                data[ri] = mesh_to_points(file_path, 16384)
+                data[ri] = mesh_to_points(file_path, 4096)
 
             # 这里自己做归一化处理，为了和pcn数据集对齐 TEST：和shapenet对齐
             data[ri] = self._normalize(data[ri])    # 还是必须做归一化处理不然会出问题，同时验证了partial和completion分开做归一化并不会影响分布，还是在同一坐标系
