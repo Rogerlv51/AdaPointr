@@ -125,7 +125,7 @@ def inference_single(model, pc_path, args, config, root=None):
     pc_ndarray_normalized = transform({'input': pc_ndarray_norm})
     # inference
     ret = model(pc_ndarray_normalized['input'].unsqueeze(0).to(args.device.lower()))
-    dense_points = ret[0].squeeze(0).detach().cpu().numpy()
+    dense_points = ret[-1].squeeze(0).detach().cpu().numpy()
     outputs = my_denormalize(dense_points, min_val, max_val)
     # outputs = pc_denorm(dense_points, cen, mm)
 
