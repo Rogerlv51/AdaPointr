@@ -34,7 +34,7 @@ class Compose(object):
                 for k, v in data.items():
                     if k in objects and k in data:
                         if transform.__class__ in [
-                            RandomMirrorPoints
+                            RandomMirrorPoints, RandomRotatePoints
                         ]:
                             data[k] = transform(v, rnd_value)
                         elif transform.__class__ in [

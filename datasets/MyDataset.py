@@ -51,10 +51,10 @@ class Teeth(data.Dataset):
             return data_transforms.Compose([{
                 'callback': 'RandomSamplePoints',
                 'parameters': {
-                    'n_points': 2048
+                    'n_points': 4096
                 },
                 'objects': ['partial']
-            }, {
+            },{
                 'callback': 'RandomMirrorPoints',
                 'objects': ['partial', 'gt']
             },{
@@ -68,7 +68,7 @@ class Teeth(data.Dataset):
             return data_transforms.Compose([{
                 'callback': 'RandomSamplePoints',
                 'parameters': {
-                    'n_points': 2048
+                    'n_points': 4096
                 },
                 'objects': ['partial']
             }, {
@@ -125,7 +125,7 @@ class Teeth(data.Dataset):
                 file_path = file_path[rand_idx]
             if ri == 'partial':
                 # data[ri] = IO.get(file_path).astype(np.float32)   # TEST：输入输出分开做处理
-                data[ri] = mesh_to_points(file_path, 4096)
+                data[ri] = mesh_to_points(file_path, 5000)
             else:
                 data[ri] = mesh_to_points(file_path, 16384)
 
